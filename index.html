@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>박민준 · Personal Portfolio</title>
+<style>
+  :root{
+    --bg:#0a0f14;
+    --bg-2:#111922;
+    --panel:rgba(255,255,255,.06);
+    --panel-strong:rgba(255,255,255,.10);
+    --text:#f3f7fb;
+    --muted:#9db0c4;
+    --line:rgba(255,255,255,.10);
+    --accent:#6ef0ca;
+    --accent-2:#7f8dff;
+    --accent-3:#ffc978;
+    --shadow:0 24px 80px rgba(0,0,0,.45);
+  }
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{ margin:0; font-family:"NanumSquare","Noto Sans CJK KR","Noto Sans KR",sans-serif; color:var(--text); background:radial-gradient(circle at top left, rgba(127,141,255,.20), transparent 22%), radial-gradient(circle at 80% 10%, rgba(110,240,202,.16), transparent 24%), linear-gradient(180deg, #091018, #0c121a 28%, #091018 100%); }
+  a{ color:inherit; text-decoration:none; }
+  .noise,.grid{ position:fixed; inset:0; pointer-events:none; z-index:0; }
+  .grid{ background-image:linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px); background-size:32px 32px; mask-image:linear-gradient(to bottom, rgba(0,0,0,.35), transparent 72%); }
+  .wrap{ position:relative; z-index:1; max-width:1200px; margin:0 auto; padding:0 24px 80px; }
+  .nav{ position:sticky; top:14px; z-index:5; margin:18px auto 0; max-width:1200px; padding:0 24px; }
+  .nav-inner{ display:flex; justify-content:space-between; align-items:center; gap:20px; padding:14px 18px; border:1px solid var(--line); border-radius:18px; background:rgba(10,15,20,.62); backdrop-filter:blur(18px); box-shadow:var(--shadow); }
+  .brand .eyebrow{ font-size:11px; color:var(--muted); letter-spacing:.34em; text-transform:uppercase; font-weight:800; }
+  .brand .name{ margin-top:4px; font-size:16px; font-weight:800; }
+  .nav-links{ display:flex; gap:18px; font-size:13px; color:var(--muted); }
+  .nav-links a:hover{ color:var(--text); }
+  .hero{ min-height:88vh; display:grid; grid-template-columns:1.2fr .8fr; gap:28px; align-items:center; padding-top:72px; }
+  .eyebrow{ font-size:12px; color:var(--accent); letter-spacing:.34em; text-transform:uppercase; font-weight:800; }
+  .hero h1{ margin:18px 0 10px; font-size:clamp(52px, 10vw, 108px); line-height:.94; letter-spacing:-.055em; }
+  .hero .sub{ font-size:clamp(18px, 2.6vw, 28px); color:#dfe9f4; font-weight:700; }
+  .hero .desc{ margin-top:22px; max-width:720px; font-size:18px; line-height:1.8; color:var(--muted); }
+  .hero .desc strong{ color:var(--text); }
+  .hero-actions{ margin-top:28px; display:flex; flex-wrap:wrap; gap:12px; }
+  .btn{ display:inline-flex; align-items:center; justify-content:center; padding:14px 18px; border-radius:14px; font-weight:800; font-size:14px; border:1px solid transparent; transition:transform .22s ease, background .22s ease, border-color .22s ease; }
+  .btn:hover{ transform:translateY(-2px); }
+  .btn.primary{ background:linear-gradient(135deg, var(--accent), #8ff9dc); color:#04110d; }
+  .btn.ghost{ background:rgba(255,255,255,.03); border-color:var(--line); color:var(--text); }
+  .hero-right{ display:grid; gap:14px; }
+  .glass{ padding:22px; border-radius:24px; background:linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.04)); border:1px solid var(--line); box-shadow:var(--shadow); }
+  .stat-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
+  .stat{ padding:20px; border-radius:22px; background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03)); border:1px solid rgba(255,255,255,.08); }
+  .stat .num{ font-size:32px; font-weight:900; letter-spacing:-.04em; color:var(--accent); }
+  .stat .lab{ margin-top:6px; font-size:13px; line-height:1.45; color:var(--muted); }
+  .quick-list{ display:grid; gap:10px; margin-top:8px; }
+  .quick-item{ display:flex; justify-content:space-between; gap:10px; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.08); font-size:14px; }
+  .quick-item:last-child{ border-bottom:none; padding-bottom:0; }
+  .quick-item span:first-child{ color:var(--muted); }
+  .quick-item strong{ text-align:right; }
+  .section{ padding-top:86px; }
+  .section-head{ display:flex; justify-content:space-between; gap:20px; align-items:end; margin-bottom:24px; }
+  .section-head h2{ margin:0; font-size:clamp(28px, 4vw, 48px); letter-spacing:-.04em; }
+  .section-head p{ margin:8px 0 0; color:var(--muted); max-width:720px; line-height:1.8; }
+  .pill-row{ display:flex; flex-wrap:wrap; gap:10px; }
+  .pill{ padding:10px 14px; border-radius:999px; background:rgba(127,141,255,.14); border:1px solid rgba(127,141,255,.26); color:#dbe0ff; font-size:13px; font-weight:700; }
+  .cards{ display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:18px; }
+  .project{ padding:24px; border-radius:26px; background:linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.04)); border:1px solid rgba(255,255,255,.08); box-shadow:var(--shadow); position:relative; overflow:hidden; }
+  .project::before{ content:''; position:absolute; inset:auto -40px -40px auto; width:140px; height:140px; background:radial-gradient(circle, rgba(110,240,202,.18), transparent 68%); }
+  .project-top{ display:flex; justify-content:space-between; gap:16px; align-items:flex-start; }
+  .project h3{ margin:0; font-size:28px; letter-spacing:-.04em; }
+  .project .meta{ font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); font-weight:800; text-align:right; }
+  .project .sub{ margin-top:6px; color:#d8e4f1; font-weight:700; }
+  .project p{ color:var(--muted); line-height:1.8; font-size:15px; }
+  .label{ margin-top:18px; font-size:11px; color:var(--muted); letter-spacing:.26em; text-transform:uppercase; font-weight:800; }
+  .stats-inline{ display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
+  .badge{ padding:10px 12px; border-radius:14px; background:rgba(110,240,202,.08); border:1px solid rgba(110,240,202,.14); }
+  .badge strong{ display:block; font-size:18px; color:var(--accent); }
+  .badge span{ display:block; margin-top:3px; color:var(--muted); font-size:12px; }
+  .stack{ margin-top:14px; font-size:13px; color:#c2d2e2; }
+  .about-grid,.exp-grid,.contact-grid{ display:grid; grid-template-columns:1.05fr .95fr; gap:18px; }
+  .about-copy{ padding:26px; border-radius:26px; background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04)); border:1px solid rgba(255,255,255,.08); box-shadow:var(--shadow); }
+  .about-copy p{ color:var(--muted); line-height:1.9; font-size:16px; }
+  .skill-list{ display:grid; gap:12px; }
+  .skill-item{ padding:18px; border-radius:22px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); }
+  .skill-item .k{ color:var(--accent); font-size:12px; letter-spacing:.24em; text-transform:uppercase; font-weight:800; }
+  .skill-item .v{ margin-top:8px; color:#d8e4f1; line-height:1.8; }
+  .timeline{ display:grid; gap:14px; }
+  .timeline-item{ padding:22px; border-radius:24px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); position:relative; overflow:hidden; }
+  .timeline-item::before{ content:''; position:absolute; left:0; top:18px; bottom:18px; width:3px; border-radius:999px; background:linear-gradient(180deg, var(--accent), rgba(127,141,255,.9)); }
+  .timeline-item .inner{ padding-left:18px; }
+  .timeline-item h3{ margin:0; font-size:20px; }
+  .timeline-item .meta{ margin-top:5px; color:var(--accent); font-size:12px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; }
+  .timeline-item ul{ margin:14px 0 0; padding-left:18px; color:var(--muted); line-height:1.8; }
+  .link-list{ display:grid; gap:12px; }
+  .link-card{ padding:18px 20px; border-radius:20px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); display:flex; justify-content:space-between; gap:12px; align-items:center; }
+  .link-card .name{ font-size:12px; color:var(--muted); letter-spacing:.2em; text-transform:uppercase; font-weight:800; }
+  .link-card .value{ margin-top:6px; font-weight:800; }
+  .contact-note{ color:var(--muted); line-height:1.8; font-size:14px; }
+  footer{ margin-top:86px; padding:26px 0 10px; border-top:1px solid rgba(255,255,255,.08); color:var(--muted); display:flex; justify-content:space-between; gap:16px; font-size:13px; }
+  @media (max-width: 980px){
+    .hero,.about-grid,.exp-grid,.contact-grid,.cards{ grid-template-columns:1fr; }
+    .stat-grid{ grid-template-columns:repeat(2,1fr); }
+    .hero{ min-height:auto; padding-top:40px; }
+    .nav-links{ display:none; }
+  }
+  @media (max-width: 640px){
+    .wrap{ padding:0 16px 64px; }
+    .nav{ padding:0 16px; }
+    .hero h1{ font-size:54px; }
+    .hero .desc{ font-size:16px; }
+    .section{ padding-top:68px; }
+    .stat-grid{ grid-template-columns:1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+  <div class="grid"></div>
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="brand">
+        <div class="eyebrow" style="color:var(--muted);">Portfolio · 2026</div>
+        <div class="name">박민준 · Founder-minded Builder</div>
+      </div>
+      <div class="nav-links">
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#experience">Experience</a>
+        <a href="#contact">Links</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <section class="hero" id="top">
+      <div>
+        <div class="eyebrow">Founder-minded Builder</div>
+        <h1>박민준</h1>
+        <div class="sub">기획 · 개발 · 그로스</div>
+        <div class="desc">두 번의 창업으로 기획부터 MVP 개발, 그로스까지 전 과정을 직접 경험한 학생 빌더입니다. 1학년 때 서울대 창업동아리 SNUSV 33기 최연소로 선발되어 메뉴 추천 서비스 ‘뭐먹을래’를, 이후 관악구 빵집 마감 할인 플랫폼 ‘플러피’를 팀 리더로 이끌었습니다. 육군 JSA에서 부대 자산·행정 시스템을 운영하며 빠른 학습력과 실무 운영 역량을 검증했고, 현재는 Claude Code 등 에이전틱 AI 도구를 활용한 바이브 코딩으로 제품을 직접 만들어 런칭하고 있습니다.</div>
+        <div class="hero-actions">
+          <a class="btn primary" href="#projects">프로젝트 보기</a>
+          <a class="btn ghost" href="https://github.com/lafley-lucas" target="_blank" rel="noreferrer">GitHub 열기</a>
+        </div>
+        <div class="pill-row" style="margin-top:22px;">
+          <span class="pill">SNUSV 33기 최연소 선발</span><span class="pill">2번의 창업 경험</span><span class="pill">AI 활용 1인 MVP 빌드</span><span class="pill">서울대학교 재학</span>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="glass">
+          <div class="eyebrow">Positioning</div>
+          <div style="margin-top:14px; font-size:28px; line-height:1.35; font-weight:900; letter-spacing:-.04em;">문제를 정의하고,<br>빠르게 검증하고,<br>직접 런칭합니다.</div>
+          <div style="margin-top:16px; color:var(--muted); line-height:1.8;">창업가의 시선으로 니즈를 찾고, 개발자의 실행력으로 MVP를 만들며, 운영자의 감각으로 제품을 다듬는 빌더 포지셔닝을 전면에 배치했습니다.</div>
+        </div>
+        <div class="stat-grid">
+          
+          <div class="stat"><div class="num">400</div><div class="lab">플러피 1주 누적 유저</div></div>
+          
+          <div class="stat"><div class="num">49</div><div class="lab">NewsLens pytest 통과</div></div>
+          
+          <div class="stat"><div class="num">20곳</div><div class="lab">플러피 점주 인터뷰</div></div>
+          
+          <div class="stat"><div class="num">915</div><div class="lab">TOEIC 점수</div></div>
+          
+        </div>
+        <div class="glass">
+          <div class="eyebrow">Quick Facts</div>
+          <div class="quick-list">
+            <div class="quick-item"><span>소속</span><strong>서울대학교 건설환경공학부 2학년</strong></div>
+            <div class="quick-item"><span>GitHub</span><strong>github.com/lafley-lucas</strong></div>
+            <div class="quick-item"><span>Email</span><strong>powerla.personal@gmail.com</strong></div>
+            <div class="quick-item"><span>Tel</span><strong>010-9853-1466</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="about">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">About</div>
+          <h2>Builder with founder instinct.</h2>
+          <p>원본 포트폴리오의 정보를 유지하면서, 웹에서는 스크롤 흐름과 시각적 대비를 강화해 한눈에 정체성과 실행력을 전달하도록 재구성했습니다.</p>
+        </div>
+      </div>
+      <div class="about-grid">
+        <div class="about-copy">
+          <p>두 번의 창업으로 기획부터 MVP 개발, 그로스까지 전 과정을 직접 경험한 학생 빌더입니다. 1학년 때 서울대 창업동아리 SNUSV 33기 최연소로 선발되어 메뉴 추천 서비스 ‘뭐먹을래’를, 이후 관악구 빵집 마감 할인 플랫폼 ‘플러피’를 팀 리더로 이끌었습니다. 육군 JSA에서 부대 자산·행정 시스템을 운영하며 빠른 학습력과 실무 운영 역량을 검증했고, 현재는 Claude Code 등 에이전틱 AI 도구를 활용한 바이브 코딩으로 제품을 직접 만들어 런칭하고 있습니다.</p>
+        </div>
+        <div class="skill-list">
+          
+          <div class="skill-item"><div class="k">제품 · 개발</div><div class="v">Python · FastAPI · React · HTML/CSS/JS · Supabase · Gemini API · Kakao API · Bubble (No-code)</div></div>
+          
+          <div class="skill-item"><div class="k">AI · 그로스</div><div class="v">Claude Code · AGI · Vibe code · Google Analytics · Instagram 마케팅 · 바이럴 마케팅</div></div>
+          
+          <div class="skill-item"><div class="k">운영 · 문서</div><div class="v">Excel · 한글(HWP) · 자산 / 재고 / 발주 관리</div></div>
+          
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="projects">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Projects</div>
+          <h2>직접 만든 제품과 배운 것들</h2>
+          <p>성과 숫자, 역할, 배운 점을 각각 다른 레이어로 보여주어 단순 소개가 아니라 “어떤 문제를 어떤 방식으로 풀어왔는가”가 드러나도록 설계했습니다.</p>
+        </div>
+      </div>
+      <div class="cards">
+        
+        <article class="project">
+          <div class="project-top">
+            <div>
+              <h3>NewsLens</h3>
+              <div class="sub">뉴스 사실 / 의견 분류 · 미디어 리터러시 서비스</div>
+            </div>
+            <div class="meta">개발 중 · 개인 · 2026</div>
+          </div>
+          <p>한국 뉴스 기사를 문장 단위로 FACT · CLAIM · OPINION · FRAMING 네 종류로 분류하고, 독자가 놓치기 쉬운 비사실 문장만 하이라이트하는 미디어 필터. 핵심 사실만 추린 ‘Fact Digest’를 제공합니다.</p>
+          <div class="label">Role</div>
+          <p>기획부터 백엔드 · 프론트 · 배포까지 전 과정 단독 수행 (에이전틱 AI 활용 바이브 코딩)</p>
+          <div class="label">Build / Learn</div>
+          <p>SSRF 차단 · IP 레이트리밋 등 보안 설계, URL 결과 캐시(24h), 원문 미저장(해시 + 인덱스만 저장), 한국어 문장 분리, GitHub Actions CI/CD</p>
+          <div class="stats-inline">
+            
+            <div class="badge"><strong>4종</strong><span>문장 분류</span></div>
+            
+            <div class="badge"><strong>49</strong><span>pytest 통과</span></div>
+            
+            <div class="badge"><strong>1인</strong><span>풀스택 빌드</span></div>
+            
+          </div>
+          <div class="stack"><strong style="color:var(--accent);">Stack</strong> · Python 3.11 · FastAPI · Gemini 2.5 Flash · HTML / CSS / JS (PWA) · SQLite · Railway · GitHub Pages</div>
+        </article>
+        
+        <article class="project">
+          <div class="project-top">
+            <div>
+              <h3>Groom-pick</h3>
+              <div class="sub">남성 그루밍 추천 서비스</div>
+            </div>
+            <div class="meta">개발 중 · 개인 · 2026</div>
+          </div>
+          <p>남성 그루밍을 위한 추천 서비스. 에이전틱 AI 도구를 활용해 빠르게 MVP를 구축하고 있습니다.</p>
+          <div class="label">Role</div>
+          <p>기획 · 개발 단독 진행 (바이브 코딩)</p>
+          <div class="label">Build / Learn</div>
+          <p>상세 기능 · 성과는 추후 보강 가능</p>
+          <div class="stats-inline">
+            
+            <div class="badge"><strong>1인</strong><span>단독 진행</span></div>
+            
+            <div class="badge"><strong>MVP</strong><span>빠른 구축</span></div>
+            
+            <div class="badge"><strong>AI</strong><span>에이전틱 도구 활용</span></div>
+            
+          </div>
+          <div class="stack"><strong style="color:var(--accent);">Stack</strong> · React · FastAPI · Supabase · Kakao API</div>
+        </article>
+        
+        <article class="project">
+          <div class="project-top">
+            <div>
+              <h3>플러피</h3>
+              <div class="sub">관악구 빵집 마감 할인 플랫폼</div>
+            </div>
+            <div class="meta">팀 리더 · 4인 · 2024</div>
+          </div>
+          <p>마감 시간에 남는 빵을 할인 판매해 폐기는 줄이고 점주와 소비자 모두 이득을 보게 하는 관악구 빵집 플랫폼. 숨은 동네 빵집 정보까지 연결합니다.</p>
+          <div class="label">Role</div>
+          <p>팀 리더 — 문제 정의, 방향 설정(관악구 한정 → 지역 확대 로드맵, XYZ 가설 수립 · MVP 테스트 계획), 마케팅 · 그로스 주도, 가게 인터뷰 및 DB 구축</p>
+          <div class="label">Build / Learn</div>
+          <p>광고 의존적 플랫폼 BM의 한계와 팀 와해를 겪으며 BM 설계 · 팀 운영의 중요성을 체감</p>
+          <div class="stats-inline">
+            
+            <div class="badge"><strong>400</strong><span>1주 누적 유저</span></div>
+            
+            <div class="badge"><strong>26</strong><span>MAU</span></div>
+            
+            <div class="badge"><strong>40</strong><span>쿠폰 예약</span></div>
+            
+            <div class="badge"><strong>20곳</strong><span>점주 인터뷰</span></div>
+            
+          </div>
+          <div class="stack"><strong style="color:var(--accent);">Stack</strong> · 리서치 · 그로스 · 인터뷰 · MVP 기획 · 로드맵 설계</div>
+        </article>
+        
+        <article class="project">
+          <div class="project-top">
+            <div>
+              <h3>뭐먹을래</h3>
+              <div class="sub">메뉴 · 맛집 추천 서비스</div>
+            </div>
+            <div class="meta">공동창업 · 2인 · 2023–2024</div>
+          </div>
+          <p>망고플레이트 종료로 생긴 맛집 추천 공백에 착안, “오늘 뭐 먹지?”라는 일상의 고민을 덜어주는 메뉴 추천 서비스.</p>
+          <div class="label">Role</div>
+          <p>공동창업자 — Bubble을 학습해 사이트(MVP) 제작, 홍보 주도. 기획 · 개발 전반 공동 수행</p>
+          <div class="label">Build / Learn</div>
+          <p>에브리타임 · 단톡방 · 인스타그램 홍보 + Google Analytics 기반 사용자 행동 분석 / 직접 개발 역량의 필요성을 절감한 계기</p>
+          <div class="stats-inline">
+            
+            <div class="badge"><strong>~50</strong><span>MAU · 3개월 유지</span></div>
+            
+            <div class="badge"><strong>33기</strong><span>SNUSV 최연소</span></div>
+            
+            <div class="badge"><strong>예창패</strong><span>지원</span></div>
+            
+          </div>
+          <div class="stack"><strong style="color:var(--accent);">Stack</strong> · Bubble · Google Analytics · MVP 제작 · 초기 유저 확보</div>
+        </article>
+        
+      </div>
+    </section>
+
+    <section class="section" id="experience">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Experience</div>
+          <h2>창업, 운영, 실행의 루프</h2>
+          <p>창업동아리 경험과 JSA 운영 경험을 함께 배치해, 아이디어 실행력과 실무 운영 역량이 동시에 보이도록 구성했습니다.</p>
+        </div>
+      </div>
+      <div class="exp-grid">
+        <div class="timeline">
+          
+          <div class="timeline-item">
+            <div class="inner">
+              <h3>SNUSV</h3>
+              <div class="meta">서울대학교 창업동아리 · 33기</div>
+              <ul>
+                <li>33기 최연소 선발자. ‘뭐먹을래’ 아이디어로 예비창업패키지(예창패) 지원까지 진행</li><li>팀 2인으로 시작해 중반 4인까지 확장, 공동대표 2인 체제로 마무리</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="timeline-item">
+            <div class="inner">
+              <h3>대한민국 육군 (JSA · 공동경비구역)</h3>
+              <div class="meta">운전병 / 행정 계원 · 만기전역 · 실무 운영</div>
+              <ul>
+                <li>부대 재산관리 시스템 DELIIS 운영 — 제품 발주, 재고 · 창고 관리, 차량 자산 · 배차 행정, 재산 문서화</li><li>검열 준비(전산–실물 일치, 창고 정리) 주도 — 통상 3개월 인수인계를 1개월 만에 습득, 검열 성공 및 유공(포상휴가 1일)</li>
+              </ul>
+            </div>
+          </div>
+          
+        </div>
+        <div class="glass">
+          <div class="eyebrow">Education & Credentials</div>
+          <div class="quick-list" style="margin-top:20px;">
+            
+            <div class="quick-item"><span>학교</span><strong>서울대학교</strong></div>
+            
+            <div class="quick-item"><span>전공</span><strong>건설환경공학부</strong></div>
+            
+            <div class="quick-item"><span>재학</span><strong>2학년 · 26-2 복학 예정</strong></div>
+            
+            <div class="quick-item"><span>영어</span><strong>TOEIC 915</strong></div>
+            
+            <div class="quick-item"><span>자격</span><strong>운전면허 1종</strong></div>
+            
+            <div class="quick-item"><span>한국어</span><strong>모국어</strong></div>
+            
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="contact">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Links</div>
+          <h2>연결 가능한 레퍼런스</h2>
+          <p>원본에서 확인 가능한 GitHub 및 프로젝트 링크만 노출했습니다. 이메일과 전화번호는 원본이 비어 있어 플레이스홀더를 유지했습니다.</p>
+        </div>
+      </div>
+      <div class="contact-grid">
+        <div class="link-list">
+          
+          <a class="link-card" href="https://github.com/lafley-lucas" target="_blank" rel="noreferrer">
+            <div>
+              <div class="name">GitHub</div>
+              <div class="value">/lafley-lucas</div>
+            </div>
+            <div style="color:var(--accent); font-weight:900;">↗</div>
+          </a>
+          
+          <a class="link-card" href="https://github.com/lafley-lucas/newslens-mvp" target="_blank" rel="noreferrer">
+            <div>
+              <div class="name">NewsLens</div>
+              <div class="value">/newslens-mvp</div>
+            </div>
+            <div style="color:var(--accent); font-weight:900;">↗</div>
+          </a>
+          
+          <a class="link-card" href="https://github.com/lafley-lucas/Groom-pick" target="_blank" rel="noreferrer">
+            <div>
+              <div class="name">Groom-pick</div>
+              <div class="value">/Groom-pick</div>
+            </div>
+            <div style="color:var(--accent); font-weight:900;">↗</div>
+          </a>
+          
+        </div>
+        <div class="glass">
+          <div class="eyebrow">Contact</div>
+          <div class="quick-list" style="margin-top:18px;">
+            <div class="quick-item"><span>Email</span><strong>powerla.personal@gmail.com</strong></div>
+            <div class="quick-item"><span>Tel</span><strong>010-9853-1466</strong></div>
+            <div class="quick-item"><span>GitHub</span><strong>github.com/lafley-lucas</strong></div>
+          </div>
+          <p class="contact-note" style="margin-top:18px;">실제 배포 전에는 이메일과 전화번호만 교체하면 바로 사용할 수 있도록 단일 HTML 구조로 제작했습니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>박민준 · Personal Website Version</span>
+      <span>github.com/lafley-lucas · 2026</span>
+    </footer>
+  </div>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
