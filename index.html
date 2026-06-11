@@ -83,8 +83,6 @@
   .hero{ min-height:92vh; display:grid; grid-template-columns:1.18fr .82fr; gap:40px; align-items:center; padding-top:84px; }
   .hero h1{ margin:20px 0 14px; font-family:var(--sans); font-size:clamp(60px, 11vw, 128px); line-height:.92;
     letter-spacing:-.05em; font-weight:700; }
-  .hero h1 .mark{ font-family:var(--serif); font-style:italic; font-weight:300; letter-spacing:-.02em;
-    background:linear-gradient(120deg, var(--accent-deep), var(--accent)); -webkit-background-clip:text; background-clip:text; color:transparent; }
   .hero .sub{ font-family:var(--serif); font-size:clamp(20px, 2.6vw, 30px); color:var(--ink-soft); font-weight:400; letter-spacing:.01em; }
   .hero .desc{ margin-top:26px; max-width:640px; font-size:17px; line-height:1.95; color:var(--ink-soft); }
   .hero .desc strong{ color:var(--text); font-weight:600; box-shadow:inset 0 -.5em 0 var(--accent-soft); }
@@ -111,7 +109,6 @@
     box-shadow:var(--shadow-soft); backdrop-filter:blur(16px) saturate(1.3); -webkit-backdrop-filter:blur(16px) saturate(1.3); overflow:hidden; }
   .panel::before{ content:''; position:absolute; inset:0 0 auto 0; height:1px; background:linear-gradient(90deg, transparent, rgba(255,255,255,.9), transparent); }
   .panel .positioning{ margin-top:16px; font-family:var(--serif); font-size:27px; line-height:1.38; font-weight:400; letter-spacing:-.01em; color:var(--text); }
-  .panel .positioning b{ font-weight:500; color:var(--accent-deep); font-style:italic; }
 
   .quick-list{ display:grid; gap:0; margin-top:10px; }
   .quick-item{ display:flex; justify-content:space-between; gap:14px; padding:13px 0; border-bottom:1px solid var(--line-soft); font-size:14px; }
@@ -252,7 +249,7 @@
     <section class="hero" id="top">
       <div>
         <div class="eyebrow reveal">Founder-minded Builder</div>
-        <h1 class="reveal" data-d="1">박민<span class="mark">준</span></h1>
+        <h1 class="reveal" data-d="1">박민준</h1>
         <div class="sub reveal" data-d="2">기획 · 개발 · 그로스</div>
         <div class="desc reveal" data-d="3">두 번의 창업으로 기획부터 MVP 개발, 그로스까지 전 과정을 직접 경험한 학생 빌더입니다. 1학년 때 서울대 창업동아리 SNUSV 33기 최연소로 선발되어 메뉴 추천 서비스 ‘뭐먹을래’를, 이후 관악구 빵집 마감 할인 플랫폼 ‘플러피’를 팀 리더로 이끌었습니다. 육군 JSA에서 부대 자산·행정 시스템을 운영하며 빠른 학습력과 실무 운영 역량을 검증했고, <strong>현재는 남성 그루밍 플랫폼 groompick를 창업중에 있습니다.</strong></div>
         <div class="hero-actions reveal" data-d="4">
@@ -266,7 +263,7 @@
       <div class="hero-right">
         <div class="panel reveal" data-d="3">
           <div class="eyebrow">Positioning</div>
-          <div class="positioning">문제를 <b>정의</b>하고,<br>빠르게 <b>검증</b>하고,<br>직접 <b>런칭</b>합니다.</div>
+          <div class="positioning">문제를 정의하고,<br>빠르게 검증하고,<br>직접 런칭합니다.</div>
         </div>
         <div class="panel reveal" data-d="4">
           <div class="eyebrow">Quick Facts</div>
@@ -291,8 +288,8 @@
           <p>두 번의 창업으로 기획부터 MVP 개발, 그로스까지 전 과정을 직접 경험한 학생 빌더입니다. 1학년 때 서울대 창업동아리 SNUSV 33기 최연소로 선발되어 메뉴 추천 서비스 ‘뭐먹을래’를, 이후 관악구 빵집 마감 할인 플랫폼 ‘플러피’를 팀 리더로 이끌었습니다. 육군 JSA에서 부대 자산·행정 시스템을 운영하며 빠른 학습력과 실무 운영 역량을 검증했고, 현재는 남성 그루밍 플랫폼 groompick를 창업중에 있습니다.</p>
         </div>
         <div class="skill-list">
-          <div class="skill-item reveal" data-d="1"><div class="k">제품 · 개발</div><div class="v">Python · FastAPI · React · HTML/CSS/JS · Supabase · Gemini API · Kakao API · Bubble (No-code)</div></div>
-          <div class="skill-item reveal" data-d="2"><div class="k">AI · 그로스</div><div class="v">Claude Code · AGI · Vibe code · Google Analytics · Instagram 마케팅 · 바이럴 마케팅</div></div>
+          <div class="skill-item reveal" data-d="1"><div class="k">제품 · 개발</div><div class="v">Python · FastAPI · React · HTML/CSS/JS · Supabase · Vercel · Railway · Bubble (No-code)</div></div>
+          <div class="skill-item reveal" data-d="2"><div class="k">AI · 그로스</div><div class="v">CC · Cursor · GA · Instagram Marketing</div></div>
           <div class="skill-item reveal" data-d="3"><div class="k">운영 · 문서</div><div class="v">Excel · 한글(HWP) · 자산 / 재고 / 발주 관리</div></div>
         </div>
       </div>
@@ -301,7 +298,7 @@
     <section class="section" id="projects">
       <div class="section-head reveal">
         <div class="eyebrow">Projects</div>
-        <h2>직접 만든 제품과 <span class="it">배운 것들</span></h2>
+        <h2>Products I <span class="it">shipped</span> &amp; learned from.</h2>
       </div>
       <div class="cards">
 
@@ -406,7 +403,7 @@
     <section class="section" id="experience">
       <div class="section-head reveal">
         <div class="eyebrow">Experience</div>
-        <h2>창업, 운영, <span class="it">실행의 루프</span></h2>
+        <h2>Founding, operating, <span class="it">executing</span>.</h2>
       </div>
       <div class="exp-grid">
         <div class="timeline">
@@ -445,7 +442,7 @@
     <section class="section" id="contact">
       <div class="section-head reveal">
         <div class="eyebrow">Links</div>
-        <h2>연결 가능한 <span class="it">레퍼런스</span></h2>
+        <h2>References you can <span class="it">reach</span>.</h2>
       </div>
       <div class="contact-grid">
         <div class="link-list">
