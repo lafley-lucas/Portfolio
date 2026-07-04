@@ -351,7 +351,11 @@ footer .sig{ font-family:var(--serif); font-style:italic; }
           <div class="stack"><b>Stack</b> &nbsp;·&nbsp; React · Vite · FastAPI · Gemini Vision · Supabase · Vercel</div>
         </article>
 
-        <article class="project reveal" data-d="1">
+        <article class="project nl reveal" data-d="1" id="proj-nl">
+          <div class="viz" aria-hidden="true">
+            <canvas id="vizNl"></canvas>
+            <span class="viz-tag">NL-SORT · live render</span>
+          </div>
           <div class="project-top">
             <div>
               <h3>NewsLens</h3>
@@ -374,7 +378,11 @@ footer .sig{ font-family:var(--serif); font-style:italic; }
           <div class="stack"><b>Stack</b> &nbsp;·&nbsp; Python 3.11 · FastAPI · Gemini 2.5 Flash · PWA · SQLite · Railway · GitHub Pages</div>
         </article>
 
-        <article class="project reveal" data-d="2">
+        <article class="project fl reveal" data-d="2" id="proj-fl">
+          <div class="viz" aria-hidden="true">
+            <canvas id="vizFl"></canvas>
+            <span class="viz-tag">FL-RESCUE · live render</span>
+          </div>
           <div class="project-top">
             <div>
               <h3>플러피</h3>
@@ -396,7 +404,11 @@ footer .sig{ font-family:var(--serif); font-style:italic; }
           <div class="stack"><b>Stack</b> &nbsp;·&nbsp; 리서치 · 그로스 · 인터뷰 · MVP 기획 · 로드맵 설계</div>
         </article>
 
-        <article class="project reveal" data-d="1">
+        <article class="project mw reveal" data-d="1" id="proj-mw">
+          <div class="viz" aria-hidden="true">
+            <canvas id="vizMw"></canvas>
+            <span class="viz-tag">MW-PICK · live render</span>
+          </div>
           <div class="project-top">
             <div>
               <h3>뭐먹을래</h3>
@@ -700,6 +712,205 @@ footer .sig{ font-family:var(--serif); font-style:italic; }
     };
   }
   Lab.register(document.getElementById('vizGp'), makeGroompickScan, document.getElementById('proj-gp'));
+
+  /* ================= NewsLens: sentence sorting ================= */
+  function makeNewslensSort(ctx, size){
+    var W = size.w, H = size.h;
+    var LANES = [
+      { k: 'FACT',    c: '111,195,214' },
+      { k: 'CLAIM',   c: '224,192,122' },
+      { k: 'OPINION', c: '224,139,90' },
+      { k: 'FRAMING', c: '182,143,214' }
+    ];
+    var ps = [], boost = 1, hot = -1;
+    function laneY(i){ return H * (0.2 + i * 0.2); }
+    function reset(p){
+      p.x = -30 - Math.random() * W * 0.3;
+      p.y = H * (0.12 + Math.random() * 0.76);
+      p.lane = Math.floor(Math.random() * 4);
+      p.w = 10 + Math.random() * 22;
+      p.speed = W * (0.14 + Math.random() * 0.1);
+    }
+    for (var i = 0; i < 26; i++){ var p = {}; reset(p); p.x = Math.random() * W; ps.push(p); }
+    return {
+      update: function(dt){
+        for (var i = 0; i < ps.length; i++){
+          var p = ps[i];
+          p.x += p.speed * dt * boost * (hot === p.lane ? 1.6 : 1);
+          if (p.x > W * 0.52) p.y += (laneY(p.lane) - p.y) * Math.min(1, dt * 4);
+          if (p.x > W + 30) reset(p);
+        }
+      },
+      draw: function(){
+        ctx.clearRect(0, 0, W, H);
+        ctx.font = '10px "IBM Plex Mono", monospace';
+        for (var l = 0; l < 4; l++){
+          var y = laneY(l), h = hot === l;
+          ctx.strokeStyle = 'rgba(' + LANES[l].c + ',' + (h ? 0.4 : 0.14) + ')';
+          ctx.beginPath(); ctx.moveTo(W * 0.5, y); ctx.lineTo(W - 14, y); ctx.stroke();
+          ctx.fillStyle = 'rgba(' + LANES[l].c + ',' + (h ? 1 : 0.75) + ')';
+          ctx.fillText(LANES[l].k, W * 0.52, y - 6);
+        }
+        ctx.strokeStyle = 'rgba(239,234,226,0.1)';
+        ctx.setLineDash([3, 5]);
+        ctx.beginPath(); ctx.moveTo(W * 0.5, H * 0.08); ctx.lineTo(W * 0.5, H * 0.92); ctx.stroke();
+        ctx.setLineDash([]);
+        for (var i = 0; i < ps.length; i++){
+          var p = ps[i], sorted = p.x > W * 0.52;
+          ctx.fillStyle = sorted ? 'rgba(' + LANES[p.lane].c + ',0.9)' : 'rgba(201,193,180,0.5)';
+          ctx.fillRect(p.x, p.y, p.w, 2);
+        }
+      },
+      resize: function(s){ W = s.w; H = s.h; },
+      renderStatic: function(){ for (var k = 0; k < 200; k++) this.update(1 / 60); this.draw(); },
+      onPointer: function(x, y, inside){
+        boost = inside ? 1.5 : 1; hot = -1;
+        if (inside && x > W * 0.4){
+          var best = 1e9;
+          for (var l = 0; l < 4; l++){
+            var d = Math.abs(y - laneY(l));
+            if (d < best){ best = d; hot = l; }
+          }
+        }
+      }
+    };
+  }
+  Lab.register(document.getElementById('vizNl'), makeNewslensSort, document.getElementById('proj-nl'));
+
+  /* ================= Fluffy: bread rescue ================= */
+  function makeFluffyRescue(ctx, size){
+    var W = size.w, H = size.h;
+    var ps = [], t = 0, hover = false;
+    function reset(p){
+      p.x = -10 - Math.random() * W * 0.25;
+      p.y = H * (0.16 + Math.random() * 0.42);
+      p.r = 2.5 + Math.random() * 2.5;
+      p.speed = W * (0.09 + Math.random() * 0.07);
+      p.saved = Math.random() < 0.8;
+      p.state = 'drift'; p.a = 1; p.rest = 0;
+    }
+    for (var i = 0; i < 22; i++){ var p = {}; reset(p); p.x = Math.random() * W * 0.6; ps.push(p); }
+    return {
+      update: function(dt){
+        t += dt;
+        var bx = W * 0.34, by = H * 0.74, lx = W * 0.8;
+        for (var i = 0; i < ps.length; i++){
+          var p = ps[i];
+          if (p.state === 'drift'){
+            p.x += p.speed * dt;
+            if ((p.saved || hover) && p.x > W * 0.55) p.state = 'save';
+            else if (p.x >= lx) p.state = 'lost';
+          } else if (p.state === 'save'){
+            p.x += (bx - p.x) * Math.min(1, dt * 3);
+            p.y += (by - p.y) * Math.min(1, dt * 3);
+            if (Math.abs(p.x - bx) < 8 && Math.abs(p.y - by) < 8) p.state = 'rest';
+          } else if (p.state === 'rest'){
+            p.rest += dt;
+            if (p.rest > 1.6){ p.a -= dt * 2; if (p.a <= 0) reset(p); }
+          } else if (p.state === 'lost'){
+            p.a -= dt * 2.4;
+            if (p.a <= 0) reset(p);
+          }
+        }
+      },
+      draw: function(){
+        ctx.clearRect(0, 0, W, H);
+        var lx = W * 0.8, bx = W * 0.34, by = H * 0.74;
+        ctx.font = '10px "IBM Plex Mono", monospace';
+        ctx.strokeStyle = 'rgba(224,139,90,0.3)';
+        ctx.setLineDash([4, 6]);
+        ctx.beginPath(); ctx.moveTo(lx, H * 0.1); ctx.lineTo(lx, H * 0.9); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = 'rgba(224,139,90,0.8)';
+        ctx.fillText('CLOSE 21:00', lx + 8, H * 0.16);
+        ctx.strokeStyle = 'rgba(224,139,90,0.6)';
+        ctx.beginPath(); ctx.arc(lx + 34, H * 0.42, 11, 0, Math.PI * 2); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(lx + 34, H * 0.42);
+        ctx.lineTo(lx + 34 + Math.cos(t * 0.9 - Math.PI / 2) * 8, H * 0.42 + Math.sin(t * 0.9 - Math.PI / 2) * 8);
+        ctx.stroke();
+        ctx.strokeStyle = 'rgba(239,234,226,0.4)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(bx, by, 20, 0.15 * Math.PI, 0.85 * Math.PI); ctx.stroke();
+        ctx.lineWidth = 1;
+        ctx.fillStyle = 'rgba(201,193,180,0.6)';
+        ctx.fillText('RESCUED', bx - 26, by + 36);
+        for (var i = 0; i < ps.length; i++){
+          var p = ps[i];
+          var glow = p.state === 'rest' ? 0.95 : 0.7;
+          ctx.fillStyle = 'rgba(224,139,90,' + (p.a * glow) + ')';
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+          if (p.state === 'rest'){
+            ctx.strokeStyle = 'rgba(224,139,90,' + (p.a * 0.4) + ')';
+            ctx.beginPath(); ctx.arc(p.x, p.y, p.r + 3, 0, Math.PI * 2); ctx.stroke();
+          }
+        }
+      },
+      resize: function(s){ W = s.w; H = s.h; },
+      renderStatic: function(){ for (var k = 0; k < 200; k++) this.update(1 / 60); this.draw(); },
+      onPointer: function(x, y, inside){ hover = inside; }
+    };
+  }
+  Lab.register(document.getElementById('vizFl'), makeFluffyRescue, document.getElementById('proj-fl'));
+
+  /* ================= MwoMeokUllae: menu roulette ================= */
+  function makeMwoRoulette(ctx, size){
+    var W = size.w, H = size.h;
+    var N = 12, ang = 0, vel = 1.4, phase = 'spin', pick = -1, timer = 0, hover = false;
+    return {
+      update: function(dt){
+        timer += dt;
+        if (phase === 'spin'){
+          vel += (2.2 - vel) * Math.min(1, dt * 2);
+          if (timer > 2.4){ phase = 'slow'; }
+        } else if (phase === 'slow'){
+          vel *= Math.max(0, 1 - dt * 1.5);
+          if (vel < 0.06){
+            vel = 0; phase = 'lock'; timer = 0;
+            var best = 1e9;
+            for (var i = 0; i < N; i++){
+              var a = ang + (i / N) * Math.PI * 2;
+              var d = Math.abs(Math.atan2(Math.sin(a), Math.cos(a)));
+              if (d < best){ best = d; pick = i; }
+            }
+          }
+        } else if (phase === 'lock'){
+          if (timer > (hover ? 0.7 : 1.6)){ phase = 'spin'; timer = 0; pick = -1; }
+        }
+        ang += vel * dt * (hover && phase === 'spin' ? 1.5 : 1);
+      },
+      draw: function(){
+        ctx.clearRect(0, 0, W, H);
+        var cx = W / 2, cy = H / 2 + 6, R = Math.min(W, H) * 0.32;
+        ctx.strokeStyle = 'rgba(239,234,226,0.1)';
+        ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.stroke();
+        ctx.fillStyle = 'rgba(201,166,104,0.9)';
+        ctx.beginPath();
+        ctx.moveTo(cx, cy - R - 12); ctx.lineTo(cx - 5, cy - R - 20); ctx.lineTo(cx + 5, cy - R - 20);
+        ctx.closePath(); ctx.fill();
+        ctx.font = '10px "IBM Plex Mono", monospace';
+        for (var i = 0; i < N; i++){
+          var a = ang + (i / N) * Math.PI * 2;
+          var x = cx + Math.cos(a - Math.PI / 2) * R, y = cy + Math.sin(a - Math.PI / 2) * R;
+          if (phase === 'lock' && i === pick){
+            var pulse = 0.6 + 0.4 * Math.sin(timer * 9);
+            ctx.fillStyle = 'rgba(127,214,178,' + pulse + ')';
+            ctx.beginPath(); ctx.arc(x, y, 6, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = 'rgba(127,214,178,0.5)';
+            ctx.beginPath(); ctx.arc(x, y, 11, 0, Math.PI * 2); ctx.stroke();
+            ctx.fillStyle = 'rgba(127,214,178,1)';
+            ctx.fillText('PICK', x + 15, y + 3);
+          } else {
+            ctx.fillStyle = 'rgba(201,193,180,0.55)';
+            ctx.beginPath(); ctx.arc(x, y, 3.4, 0, Math.PI * 2); ctx.fill();
+          }
+        }
+      },
+      resize: function(s){ W = s.w; H = s.h; },
+      renderStatic: function(){ phase = 'lock'; pick = 2; timer = 0.05; this.draw(); },
+      onPointer: function(x, y, inside){ hover = inside; }
+    };
+  }
+  Lab.register(document.getElementById('vizMw'), makeMwoRoulette, document.getElementById('proj-mw'));
 
   /* ================= scroll: progress + nav ================= */
   var progress = document.getElementById('progress');
