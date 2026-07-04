@@ -262,6 +262,7 @@ footer .sig{ font-family:var(--serif); font-style:italic; }
 
   <div class="wrap">
     <section class="hero" id="top">
+      <canvas class="hero-canvas" id="heroCanvas" aria-hidden="true"></canvas>
       <div>
         <div class="eyebrow reveal">Founder-minded Builder</div>
         <h1 class="reveal" data-d="1">박민준</h1>
@@ -501,49 +502,160 @@ footer .sig{ font-family:var(--serif); font-style:italic; }
   </div>
 
   <script>
-    // scroll progress + nav shadow + parallax ambient light
-    (function(){
-      var progress = document.getElementById('progress');
-      var nav = document.getElementById('nav');
-      var ambient = document.getElementById('ambient');
-      var ticking = false;
-      function onScroll(){
-        var st = window.scrollY || document.documentElement.scrollTop;
-        var h = document.documentElement.scrollHeight - window.innerHeight;
-        progress.style.width = (h > 0 ? (st / h) * 100 : 0) + '%';
-        nav.classList.toggle('scrolled', st > 12);
-        ambient.style.transform = 'translateY(' + (st * 0.06) + 'px)';
-        ticking = false;
+(function(){
+  'use strict';
+
+  /* ================= Lab engine ================= */
+  var Lab = (function(){
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var fine = window.matchMedia('(pointer: fine)').matches;
+    var items = [];
+    var running = false, last = 0;
+
+    function fit(canvas){
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var r = canvas.getBoundingClientRect();
+      var w = Math.max(1, r.width), h = Math.max(1, r.height);
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      canvas.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0);
+      return { w: w, h: h };
+    }
+    function loop(t){
+      if (!last) last = t;
+      var dt = Math.min(0.05, (t - last) / 1000);
+      last = t;
+      var any = false;
+      for (var i = 0; i < items.length; i++){
+        if (!items[i].active) continue;
+        any = true;
+        items[i].v.update(dt);
+        items[i].v.draw();
       }
-      window.addEventListener('scroll', function(){
-        if(!ticking){ window.requestAnimationFrame(onScroll); ticking = true; }
-      }, { passive:true });
-      onScroll();
-
-      // gentle mouse parallax for the indirect lighting
-      var mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-      if(!mq.matches && window.matchMedia('(pointer:fine)').matches){
-        window.addEventListener('mousemove', function(e){
-          var x = (e.clientX / window.innerWidth - 0.5);
-          var y = (e.clientY / window.innerHeight - 0.5);
-          ambient.style.transform += '';
-          ambient.style.setProperty('transform', 'translate(' + (x*22) + 'px,' + (y*22 + (window.scrollY*0.06)) + 'px)');
-        }, { passive:true });
-      }
-
-      // reveal on scroll
-      var io = new IntersectionObserver(function(entries){
-        entries.forEach(function(en){
-          if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); }
-        });
-      }, { threshold:0.12, rootMargin:'0px 0px -8% 0px' });
-      document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
-
-      // ensure hero reveals fire on load
-      window.addEventListener('load', function(){
-        document.querySelectorAll('.hero .reveal').forEach(function(el){ el.classList.add('in'); });
+      if (any){ requestAnimationFrame(loop); } else { running = false; last = 0; }
+    }
+    function wake(){
+      if (!running && !reduced){ running = true; last = 0; requestAnimationFrame(loop); }
+    }
+    function register(canvas, factory, hoverEl){
+      if (!canvas || !canvas.getContext) return null;
+      var size = fit(canvas);
+      var v = factory(canvas.getContext('2d'), size);
+      var item = { v: v, active: false };
+      var rT;
+      window.addEventListener('resize', function(){
+        clearTimeout(rT);
+        rT = setTimeout(function(){
+          v.resize(fit(canvas));
+          if (reduced) v.renderStatic();
+        }, 150);
       });
-    })();
+      if (reduced){ v.renderStatic(); return v; }
+      if ('IntersectionObserver' in window){
+        new IntersectionObserver(function(es){
+          for (var i = 0; i < es.length; i++) item.active = es[i].isIntersecting;
+          wake();
+        }, { rootMargin: '100px' }).observe(canvas);
+      } else { item.active = true; }
+      if (v.onPointer){   /* touch pointers included — hero reacts to touch drag */
+        var target = hoverEl || canvas;
+        target.addEventListener('pointermove', function(e){
+          var r = canvas.getBoundingClientRect();
+          v.onPointer(e.clientX - r.left, e.clientY - r.top, true);
+        }, { passive: true });
+        target.addEventListener('pointerleave', function(){ v.onPointer(-1, -1, false); });
+      }
+      items.push(item);
+      wake();
+      return v;
+    }
+    return { register: register, reduced: reduced, fine: fine };
+  })();
+
+  /* ================= hero flow field ================= */
+  function makeHeroField(ctx, size){
+    var W = size.w, H = size.h;
+    var ps = [], t = 0, px = -1e4, py = -1e4;
+    function count(){ return Math.round(Math.min(220, (W * H) / 9000)); }
+    function reset(p){
+      p.x = Math.random() * W; p.y = Math.random() * H;
+      p.life = 4 + Math.random() * 6;
+      p.speed = 14 + Math.random() * 26;
+      p.gold = Math.random() < 0.86;
+    }
+    function build(){
+      ps.length = 0;
+      for (var i = 0; i < count(); i++){ var p = {}; reset(p); p.life *= Math.random(); ps.push(p); }
+    }
+    build();
+    function field(x, y){
+      return Math.sin(x * 0.0016 + t * 0.28) + Math.cos(y * 0.0019 - t * 0.22)
+           + Math.sin((x + y) * 0.0008 + t * 0.11);
+    }
+    function step(dt){
+      t += dt;
+      for (var i = 0; i < ps.length; i++){
+        var p = ps[i];
+        var a = field(p.x, p.y) * Math.PI * 0.75;
+        var vx = Math.cos(a) * p.speed, vy = Math.sin(a) * p.speed;
+        var dx = px - p.x, dy = py - p.y, d2 = dx * dx + dy * dy;
+        if (d2 < 32400){
+          var d = Math.sqrt(d2) || 1, f = (1 - d / 180) * 60;
+          vx += (dx / d) * f; vy += (dy / d) * f;
+        }
+        p.x += vx * dt; p.y += vy * dt; p.life -= dt;
+        if (p.life <= 0 || p.x < -20 || p.x > W + 20 || p.y < -20 || p.y > H + 20) reset(p);
+      }
+    }
+    function paint(fade){
+      ctx.fillStyle = 'rgba(13,12,10,' + fade + ')';
+      ctx.fillRect(0, 0, W, H);
+      for (var i = 0; i < ps.length; i++){
+        var p = ps[i];
+        var a = Math.max(0, Math.min(0.55, p.life * 0.14));
+        ctx.fillStyle = p.gold ? 'rgba(201,166,104,' + a + ')' : 'rgba(111,195,214,' + a * 0.8 + ')';
+        ctx.fillRect(p.x, p.y, 1.6, 1.6);
+      }
+    }
+    return {
+      update: step,
+      draw: function(){ paint(0.085); },
+      resize: function(s){ W = s.w; H = s.h; build(); },
+      renderStatic: function(){ for (var k = 0; k < 240; k++) step(1 / 60); paint(1); },
+      onPointer: function(x, y, inside){ px = inside ? x : -1e4; py = inside ? y : -1e4; }
+    };
+  }
+  Lab.register(document.getElementById('heroCanvas'), makeHeroField, document.documentElement);
+
+  /* ================= scroll: progress + nav ================= */
+  var progress = document.getElementById('progress');
+  var nav = document.getElementById('nav');
+  var ticking = false;
+  function onScroll(){
+    var st = window.scrollY || document.documentElement.scrollTop;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = (h > 0 ? (st / h) * 100 : 0) + '%';
+    nav.classList.toggle('scrolled', st > 12);
+    ticking = false;
+  }
+  window.addEventListener('scroll', function(){
+    if (!ticking){ window.requestAnimationFrame(onScroll); ticking = true; }
+  }, { passive: true });
+  onScroll();
+
+  /* ================= reveal on scroll ================= */
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if (en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  window.addEventListener('load', function(){
+    document.querySelectorAll('.hero .reveal').forEach(function(el){ el.classList.add('in'); });
+  });
+
+  window.__lab = { Lab: Lab };   /* debug handle */
+})();
   </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
