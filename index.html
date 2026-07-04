@@ -275,6 +275,10 @@ footer .sig{ font-family:var(--serif); font-style:italic; }
         <div class="pill-row reveal" data-d="5" style="margin-top:26px;">
           <span class="pill">SNUSV 33기 최연소 선발</span><span class="pill">2번의 창업 경험</span><span class="pill">AI 활용 1인 MVP 빌드</span><span class="pill">서울대학교 재학</span>
         </div>
+        <div class="lab-status reveal" data-d="6">
+          <span class="dot"></span>
+          <span>LAB STATUS — <b>groom·pick : LIVE</b> · NewsLens : LIVE · next experiment loading…</span>
+        </div>
       </div>
       <div class="hero-right">
         <div class="panel reveal" data-d="3">
@@ -938,6 +942,39 @@ footer .sig{ font-family:var(--serif); font-style:italic; }
   window.addEventListener('load', function(){
     document.querySelectorAll('.hero .reveal').forEach(function(el){ el.classList.add('in'); });
   });
+
+  /* ================= scroll-linked section titles ================= */
+  if (!Lab.reduced){
+    var heads = Array.prototype.slice.call(document.querySelectorAll('.section-head h2'));
+    var headTick = false;
+    var headScroll = function(){
+      var vh = window.innerHeight;
+      for (var i = 0; i < heads.length; i++){
+        var r = heads[i].getBoundingClientRect();
+        if (r.bottom < -80 || r.top > vh + 80) continue;
+        var pr = Math.max(0, Math.min(1, 1 - r.top / vh));
+        heads[i].style.letterSpacing = ((pr - 0.5) * 2) + 'px';
+        heads[i].style.transform = 'translateY(' + ((0.5 - pr) * 16) + 'px)';
+      }
+      headTick = false;
+    };
+    window.addEventListener('scroll', function(){
+      if (!headTick){ requestAnimationFrame(headScroll); headTick = true; }
+    }, { passive: true });
+    headScroll();
+  }
+
+  /* ================= magnetic buttons ================= */
+  if (Lab.fine && !Lab.reduced){
+    document.querySelectorAll('.btn').forEach(function(el){
+      el.addEventListener('pointermove', function(e){
+        var r = el.getBoundingClientRect();
+        el.style.transform = 'translate(' + (e.clientX - r.left - r.width / 2) * 0.18 + 'px,'
+          + (e.clientY - r.top - r.height / 2) * 0.3 + 'px)';
+      }, { passive: true });
+      el.addEventListener('pointerleave', function(){ el.style.transform = ''; });
+    });
+  }
 
   window.__lab = { Lab: Lab };   /* debug handle */
 })();
