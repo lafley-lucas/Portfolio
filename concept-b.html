@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#f4f2ee" />
+<title>박민준 · Personal Portfolio — Concept B</title>
+<meta name="description" content="박민준 — 기획부터 개발, 그로스까지 직접 만드는 Founder-minded Builder. 현재 남성 그루밍 AI 코치 groom·pick 창업 중." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<style>
+:root{
+  --bg:#f4f2ee;
+  --ink:#141311;
+  --muted:#8f8a80;
+  --line:rgba(20,19,17,.16);
+  --line-soft:rgba(20,19,17,.08);
+  --panel:#0d0c0a;
+  --panel-ink:#efeae2;
+  --gp:#e0a458; --nl:#6fc3d6; --fl:#e08b5a; --mw:#7fd6b2;
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --sans:"Pretendard Variable",Pretendard,-apple-system,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,monospace;
+}
+*{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; -webkit-font-smoothing:antialiased; }
+body{ margin:0; font-family:var(--sans); color:var(--ink); background:var(--bg); overflow-x:hidden; }
+a{ color:inherit; text-decoration:none; }
+.mono{ font-family:var(--mono); }
+
+.wrap{ max-width:1440px; margin:0 auto; padding:0 clamp(18px, 3.5vw, 56px); }
+
+/* ---------- top bar ---------- */
+.bar{ position:sticky; top:0; z-index:40; display:flex; justify-content:space-between; align-items:center; gap:16px;
+  padding:16px clamp(18px, 3.5vw, 56px); background:rgba(244,242,238,.86); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line-soft); font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; }
+.bar-links{ display:flex; gap:26px; }
+.bar-links a{ position:relative; }
+.bar-links a::after{ content:''; position:absolute; left:0; bottom:-3px; width:0; height:1px; background:var(--ink); transition:width .3s var(--ease); }
+.bar-links a:hover::after{ width:100%; }
+.bar .alt{ color:var(--muted); }
+.bar .alt:hover{ color:var(--ink); }
+
+/* ---------- hero ---------- */
+.hero{ padding-top:clamp(48px, 8vh, 110px); }
+.eyeline{ font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--muted); display:flex; align-items:center; gap:12px; }
+.eyeline::before{ content:''; width:34px; height:1px; background:var(--ink); }
+.giant{ margin:10px 0 0 -0.04em; font-size:clamp(88px, 21vw, 300px); line-height:.94; letter-spacing:-.06em; font-weight:800; }
+.giant .g{ display:inline-block; transform:translateY(110%); opacity:0; }
+.giant.in .g{ transform:none; opacity:1; transition:transform .9s var(--ease), opacity .7s var(--ease); }
+.giant.in .g:nth-child(2){ transition-delay:.08s; } .giant.in .g:nth-child(3){ transition-delay:.16s; }
+.hero-grid{ display:grid; grid-template-columns:1fr 1.1fr; gap:24px 48px; align-items:end; margin-top:clamp(20px, 4vh, 44px); padding-bottom:clamp(28px, 6vh, 64px); }
+.hero-grid .k{ font-family:var(--mono); font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); }
+.hero-grid .desc{ margin:10px 0 0; font-size:15.5px; line-height:1.95; }
+.hero-grid .desc strong{ font-weight:700; box-shadow:inset 0 -.45em 0 rgba(224,164,88,.28); }
+.hero-facts{ display:grid; gap:0; border-top:1px solid var(--line); }
+.hf{ display:flex; justify-content:space-between; gap:16px; padding:11px 0; border-bottom:1px solid var(--line-soft); font-size:13px; }
+.hf span{ color:var(--muted); font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; padding-top:2px; }
+.hf b{ font-weight:600; text-align:right; }
+
+/* ---------- marquee ---------- */
+.marquee{ overflow:hidden; border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:13px 0; }
+.marquee-track{ display:inline-flex; gap:0; white-space:nowrap; font-family:var(--mono); font-size:12px; letter-spacing:.3em;
+  text-transform:uppercase; color:var(--ink); animation:slide 26s linear infinite; will-change:transform; }
+.marquee-track span{ padding-right:.3em; }
+@keyframes slide{ to{ transform:translateX(-50%); } }
+
+/* ---------- sections ---------- */
+.sec{ padding-top:clamp(72px, 12vh, 140px); }
+.sec-head{ display:flex; justify-content:space-between; align-items:baseline; gap:20px; border-bottom:1px solid var(--ink); padding-bottom:14px; }
+.sec-head h2{ margin:0; font-size:clamp(28px, 4.6vw, 64px); letter-spacing:-.04em; font-weight:800; text-transform:uppercase; }
+.sec-head .count{ font-family:var(--mono); font-size:12px; letter-spacing:.18em; color:var(--muted); }
+
+/* ---------- about ---------- */
+.about-grid{ display:grid; grid-template-columns:1.15fr .85fr; gap:28px 64px; padding-top:36px; }
+.about-grid .lead{ margin:0; font-size:clamp(24px, 3vw, 40px); line-height:1.3; letter-spacing:-.03em; font-weight:700; }
+.about-grid .body{ font-size:15px; line-height:2; margin:18px 0 0; }
+.skill-rows{ border-top:1px solid var(--line); }
+.skill-row{ display:grid; grid-template-columns:150px 1fr; gap:18px; padding:16px 0; border-bottom:1px solid var(--line-soft); }
+.skill-row .k{ font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); padding-top:3px; }
+.skill-row .v{ font-size:14px; line-height:1.8; }
+
+/* ---------- work rows ---------- */
+.rows{ border-bottom:1px solid var(--line); }
+.row{ border-top:1px solid var(--line); }
+.row:first-child{ border-top:none; }
+.row-head{ display:grid; grid-template-columns:70px 1fr auto 44px; align-items:center; gap:18px; width:100%;
+  padding:26px 10px; background:none; border:0; cursor:pointer; text-align:left; color:inherit; font:inherit;
+  transition:background .35s var(--ease), color .35s var(--ease), padding .35s var(--ease); }
+.row-head .idx{ font-family:var(--mono); font-size:12px; letter-spacing:.14em; color:var(--muted); transition:color .35s var(--ease); }
+.row-head .name{ margin:0; font-size:clamp(34px, 5.6vw, 84px); line-height:1; letter-spacing:-.04em; font-weight:800; transition:transform .45s var(--ease); }
+.row-head .tag{ font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); text-align:right; transition:color .35s var(--ease); }
+.row-head .plus{ font-family:var(--mono); font-size:20px; text-align:center; color:var(--muted); transition:transform .4s var(--ease), color .35s var(--ease); }
+@media (hover:hover){
+  .row-head:hover{ background:var(--ink); color:var(--bg); padding-left:26px; padding-right:26px; }
+  .row-head:hover .idx, .row-head:hover .tag, .row-head:hover .plus{ color:var(--bg); }
+  .row-head:hover .name{ transform:translateX(10px); }
+}
+.row.open .plus{ transform:rotate(45deg); color:var(--ink); }
+.row-body{ max-height:0; overflow:hidden; transition:max-height .6s var(--ease); }
+.row-inner{ display:grid; grid-template-columns:400px 1fr; gap:32px 56px; padding:8px 10px 44px; }
+.viz-panel{ position:relative; height:280px; border-radius:16px; overflow:hidden; background:var(--panel); }
+.viz-panel canvas{ position:absolute; inset:0; width:100%; height:100%; display:block; }
+.viz-panel .vtag{ position:absolute; left:14px; bottom:11px; font-family:var(--mono); font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--pa, #c9a668); }
+.row[data-k="gp"]{ --pa:var(--gp); } .row[data-k="nl"]{ --pa:var(--nl); }
+.row[data-k="fl"]{ --pa:var(--fl); } .row[data-k="mw"]{ --pa:var(--mw); }
+.row-copy .sub{ margin:0 0 14px; font-size:16px; font-weight:600; }
+.row-copy p{ font-size:14.5px; line-height:1.9; margin:8px 0; }
+.lbl{ margin-top:18px; font-family:var(--mono); font-size:10px; letter-spacing:.22em; text-transform:uppercase; color:var(--muted); }
+.live{ display:inline-flex; align-items:center; gap:6px; margin-top:6px; font-weight:600; font-size:14.5px; border-bottom:1px solid var(--ink); padding-bottom:2px; }
+.live::after{ content:'↗'; }
+.live:hover{ color:var(--muted); border-color:var(--muted); }
+.figs{ display:flex; flex-wrap:wrap; gap:26px; margin-top:20px; padding-top:16px; border-top:1px solid var(--line-soft); }
+.fig strong{ display:block; font-size:26px; letter-spacing:-.02em; font-weight:800; }
+.fig span{ display:block; margin-top:3px; font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; color:var(--muted); }
+.stackline{ margin-top:20px; font-family:var(--mono); font-size:11.5px; line-height:1.8; letter-spacing:.02em; color:var(--muted); }
+
+/* ---------- floating peek ---------- */
+#peek{ position:fixed; left:0; top:0; width:360px; height:240px; z-index:60; pointer-events:none; border-radius:16px; overflow:hidden;
+  background:var(--panel); box-shadow:0 30px 70px -20px rgba(20,19,17,.5); opacity:0; transform:scale(.92); transition:opacity .25s var(--ease), transform .25s var(--ease); }
+#peek.show{ opacity:1; transform:scale(1); }
+#peek canvas{ position:absolute; inset:0; width:100%; height:100%; display:none; }
+#peek canvas.on{ display:block; }
+#peek .ptag{ position:absolute; left:14px; bottom:11px; font-family:var(--mono); font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#c9a668; }
+
+/* ---------- experience ---------- */
+.xp-rows{ border-top:1px solid var(--line); margin-top:36px; }
+.xp{ display:grid; grid-template-columns:minmax(200px,320px) 1fr; gap:20px 56px; padding:26px 10px; border-bottom:1px solid var(--line-soft); }
+.xp h3{ margin:0; font-size:22px; letter-spacing:-.02em; font-weight:800; }
+.xp .m{ margin-top:6px; font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+.xp ul{ margin:0; padding-left:18px; font-size:14.5px; line-height:1.9; }
+.xp li{ margin-bottom:6px; }
+.cred{ display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:0 40px; margin-top:8px; }
+.cred .hf{ font-size:13.5px; }
+
+/* ---------- contact ---------- */
+.biglinks{ border-top:1px solid var(--line); margin-top:36px; }
+.biglink{ display:flex; justify-content:space-between; align-items:center; gap:18px; padding:26px 10px; border-bottom:1px solid var(--line-soft);
+  font-size:clamp(24px, 4vw, 56px); letter-spacing:-.03em; font-weight:800; transition:background .35s var(--ease), color .35s var(--ease), padding .35s var(--ease); }
+.biglink .m{ font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); font-weight:400; }
+.biglink .arr{ font-size:.7em; transition:transform .35s var(--ease); }
+@media (hover:hover){
+  .biglink:hover{ background:var(--ink); color:var(--bg); padding-left:26px; padding-right:26px; }
+  .biglink:hover .m{ color:var(--bg); }
+  .biglink:hover .arr{ transform:translate(6px,-6px); }
+}
+
+footer{ display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; padding:40px 0 34px; margin-top:90px;
+  border-top:1px solid var(--line); font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+
+/* ---------- reveal ---------- */
+.rv{ opacity:0; transform:translateY(22px); transition:opacity .9s var(--ease), transform .9s var(--ease); }
+.rv.in{ opacity:1; transform:none; }
+
+@media (max-width: 900px){
+  .hero-grid, .about-grid{ grid-template-columns:1fr; }
+  .row-inner{ grid-template-columns:1fr; }
+  .viz-panel{ height:220px; }
+  .row-head{ grid-template-columns:44px 1fr 30px; }
+  .row-head .tag{ display:none; }
+  .xp{ grid-template-columns:1fr; }
+  #peek{ display:none; }
+}
+@media (prefers-reduced-motion: reduce){
+  *{ animation:none !important; }
+  .rv, .giant .g{ opacity:1 !important; transform:none !important; transition:none !important; }
+  html{ scroll-behavior:auto; }
+  #peek{ display:none; }
+}
+</style>
+</head>
+<body>
+
+  <nav class="bar">
+    <span>박민준 — Portfolio 2026</span>
+    <div class="bar-links">
+      <a href="#about">About</a>
+      <a href="#work">Work</a>
+      <a href="#experience">Experience</a>
+      <a href="#contact">Contact</a>
+      <a class="alt" href="index.html">Dark Lab ver. ⇄</a>
+    </div>
+  </nav>
+
+  <div class="wrap">
+
+    <header class="hero">
+      <div class="eyeline mono">Founder-minded Builder · Seoul</div>
+      <h1 class="giant" id="giant"><span class="g">박</span><span class="g">민</span><span class="g">준</span></h1>
+      <div class="hero-grid">
+        <div>
+          <div class="k">기획 · 개발 · 그로스</div>
+          <p class="desc">두 번의 창업으로 기획부터 MVP 개발, 그로스까지 전 과정을 직접 경험한 학생 빌더입니다. 1학년 때 서울대 창업동아리 SNUSV 33기 최연소로 선발되어 메뉴 추천 서비스 ‘뭐먹을래’를, 이후 관악구 빵집 마감 할인 플랫폼 ‘플러피’를 팀 리더로 이끌었습니다. 육군 JSA에서 부대 자산·행정 시스템을 운영하며 빠른 학습력과 실무 운영 역량을 검증했고, <strong>현재는 남성 그루밍 플랫폼 groompick를 창업중에 있습니다.</strong></p>
+        </div>
+        <div class="hero-facts">
+          <div class="hf"><span>Positioning</span><b>문제를 정의하고, 빠르게 검증하고, 직접 런칭합니다.</b></div>
+          <div class="hf"><span>소속</span><b>서울대 건설환경공학부 2학년</b></div>
+          <div class="hf"><span>GitHub</span><b>github.com/lafley-lucas</b></div>
+          <div class="hf"><span>Email</span><b>powerla.personal@gmail.com</b></div>
+          <div class="hf"><span>Tel</span><b>010-9853-1466</b></div>
+        </div>
+      </div>
+    </header>
+
+  </div>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track" id="marq"></div>
+  </div>
+
+  <div class="wrap">
+
+    <section class="sec" id="about">
+      <div class="sec-head rv">
+        <h2>About</h2>
+        <span class="count">Builder with founder instinct</span>
+      </div>
+      <div class="about-grid">
+        <div class="rv">
+          <p class="lead">아이디어를 제품으로 옮기는 전 과정을, 직접.</p>
+          <p class="body">두 번의 창업으로 기획부터 MVP 개발, 그로스까지 전 과정을 직접 경험한 학생 빌더입니다. 1학년 때 서울대 창업동아리 SNUSV 33기 최연소로 선발되어 메뉴 추천 서비스 ‘뭐먹을래’를, 이후 관악구 빵집 마감 할인 플랫폼 ‘플러피’를 팀 리더로 이끌었습니다. 육군 JSA에서 부대 자산·행정 시스템을 운영하며 빠른 학습력과 실무 운영 역량을 검증했고, 현재는 남성 그루밍 플랫폼 groompick를 창업중에 있습니다.</p>
+        </div>
+        <div class="skill-rows rv">
+          <div class="skill-row"><div class="k">제품 · 개발</div><div class="v">Python · FastAPI · React · HTML/CSS/JS · Supabase · Vercel · Railway · Bubble (No-code)</div></div>
+          <div class="skill-row"><div class="k">AI · 그로스</div><div class="v">CC · Cursor · GA · Instagram Marketing</div></div>
+          <div class="skill-row"><div class="k">운영 · 문서</div><div class="v">Excel · 한글(HWP) · 자산 / 재고 / 발주 관리</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="work">
+      <div class="sec-head rv">
+        <h2>Selected Work</h2>
+        <span class="count">(4) — 2023 → 2026 · hover a row</span>
+      </div>
+      <div class="rows rv">
+
+        <article class="row" data-k="gp">
+          <button class="row-head" type="button" aria-expanded="false">
+            <span class="idx">01</span>
+            <h3 class="name">groom·pick</h3>
+            <span class="tag">런칭 · 창업 · 2026</span>
+            <span class="plus">+</span>
+          </button>
+          <div class="row-body">
+            <div class="row-inner">
+              <div class="viz-panel" aria-hidden="true">
+                <canvas id="pnlGp"></canvas>
+                <span class="vtag">GP-SCAN · live render</span>
+              </div>
+              <div class="row-copy">
+                <p class="sub">셀피 기반 남성 그루밍 AI 코치 · 현재 메인 서비스</p>
+                <p>셀피 한 장으로 눈썹과 피부 두 트랙을 분석해 맞춤 그루밍 가이드를 제공하는 AI 코치. 자체 검증한 <strong>newlook</strong> 비전 분석 엔진을 독립 모노레포로 재구성해 제품화했고, 현재 정식 배포되어 운영 중입니다.</p>
+                <div class="lbl">Role</div>
+                <p>기획부터 엔진 설계 · 백엔드 · 프론트 · 배포 · 운영까지 전 과정 단독 수행하며 창업 진행 (에이전틱 AI 활용 바이브 코딩)</p>
+                <div class="lbl">Build / Learn</div>
+                <p>비전 LLM + Pydantic 스키마 기반 분석 파이프라인, FastAPI 권위 서버의 분기 가드 · 영속화 설계, Vercel 프로덕션 배포 및 운영</p>
+                <div class="lbl">Live</div>
+                <a class="live" href="https://groom-pick.vercel.app" target="_blank" rel="noreferrer">groom-pick.vercel.app</a>
+                <div class="figs">
+                  <div class="fig"><strong>2트랙</strong><span>눈썹 · 피부 분석</span></div>
+                  <div class="fig"><strong>런칭</strong><span>정식 배포 운영</span></div>
+                  <div class="fig"><strong>1인</strong><span>풀스택 빌드</span></div>
+                </div>
+                <div class="stackline">STACK — React · Vite · FastAPI · Gemini Vision · Supabase · Vercel</div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="row" data-k="nl">
+          <button class="row-head" type="button" aria-expanded="false">
+            <span class="idx">02</span>
+            <h3 class="name">NewsLens</h3>
+            <span class="tag">런칭 · 개인 · 2026</span>
+            <span class="plus">+</span>
+          </button>
+          <div class="row-body">
+            <div class="row-inner">
+              <div class="viz-panel" aria-hidden="true">
+                <canvas id="pnlNl"></canvas>
+                <span class="vtag">NL-SORT · live render</span>
+              </div>
+              <div class="row-copy">
+                <p class="sub">뉴스 사실 / 의견 분류 · 미디어 리터러시</p>
+                <p>한국 뉴스 기사를 문장 단위로 FACT · CLAIM · OPINION · FRAMING 네 종류로 분류하고, 독자가 놓치기 쉬운 비사실 문장만 하이라이트하는 미디어 필터. 핵심 사실만 추린 ‘Fact Digest’를 제공합니다.</p>
+                <div class="lbl">Role</div>
+                <p>기획부터 백엔드 · 프론트 · 배포까지 전 과정 단독 수행 (에이전틱 AI 활용 바이브 코딩)</p>
+                <div class="lbl">Build / Learn</div>
+                <p>SSRF 차단 · IP 레이트리밋 등 보안 설계, URL 결과 캐시(24h), 원문 미저장(해시 + 인덱스만 저장), 한국어 문장 분리, GitHub Actions CI/CD</p>
+                <div class="lbl">Live</div>
+                <a class="live" href="https://lafley-lucas.github.io/newslens-mvp/" target="_blank" rel="noreferrer">lafley-lucas.github.io/newslens-mvp</a>
+                <div class="figs">
+                  <div class="fig"><strong>4종</strong><span>문장 분류</span></div>
+                  <div class="fig"><strong>49</strong><span>pytest 통과</span></div>
+                  <div class="fig"><strong>1인</strong><span>풀스택 빌드</span></div>
+                </div>
+                <div class="stackline">STACK — Python 3.11 · FastAPI · Gemini 2.5 Flash · PWA · SQLite · Railway · GitHub Pages</div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="row" data-k="fl">
+          <button class="row-head" type="button" aria-expanded="false">
+            <span class="idx">03</span>
+            <h3 class="name">플러피</h3>
+            <span class="tag">팀 리더 · 4인 · 2024</span>
+            <span class="plus">+</span>
+          </button>
+          <div class="row-body">
+            <div class="row-inner">
+              <div class="viz-panel" aria-hidden="true">
+                <canvas id="pnlFl"></canvas>
+                <span class="vtag">FL-RESCUE · live render</span>
+              </div>
+              <div class="row-copy">
+                <p class="sub">관악구 빵집 마감 할인 플랫폼</p>
+                <p>마감 시간에 남는 빵을 할인 판매해 폐기는 줄이고 점주와 소비자 모두 이득을 보게 하는 관악구 빵집 플랫폼. 숨은 동네 빵집 정보까지 연결합니다.</p>
+                <div class="lbl">Role</div>
+                <p>팀 리더 — 문제 정의, 방향 설정(관악구 한정 → 지역 확대 로드맵, XYZ 가설 수립 · MVP 테스트 계획), 마케팅 · 그로스 주도, 가게 인터뷰 및 DB 구축</p>
+                <div class="lbl">Build / Learn</div>
+                <p>광고 의존적 플랫폼 BM의 한계와 팀 와해를 겪으며 BM 설계 · 팀 운영의 중요성을 체감</p>
+                <div class="figs">
+                  <div class="fig"><strong>400</strong><span>1주 누적 유저</span></div>
+                  <div class="fig"><strong>26</strong><span>MAU</span></div>
+                  <div class="fig"><strong>40</strong><span>쿠폰 예약</span></div>
+                  <div class="fig"><strong>20곳</strong><span>점주 인터뷰</span></div>
+                </div>
+                <div class="stackline">STACK — 리서치 · 그로스 · 인터뷰 · MVP 기획 · 로드맵 설계</div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="row" data-k="mw">
+          <button class="row-head" type="button" aria-expanded="false">
+            <span class="idx">04</span>
+            <h3 class="name">뭐먹을래</h3>
+            <span class="tag">공동창업 · 2인 · 2023–24</span>
+            <span class="plus">+</span>
+          </button>
+          <div class="row-body">
+            <div class="row-inner">
+              <div class="viz-panel" aria-hidden="true">
+                <canvas id="pnlMw"></canvas>
+                <span class="vtag">MW-PICK · live render</span>
+              </div>
+              <div class="row-copy">
+                <p class="sub">메뉴 · 맛집 추천 서비스</p>
+                <p>망고플레이트 종료로 생긴 맛집 추천 공백에 착안, “오늘 뭐 먹지?”라는 일상의 고민을 덜어주는 메뉴 추천 서비스.</p>
+                <div class="lbl">Role</div>
+                <p>공동창업자 — Bubble을 학습해 사이트(MVP) 제작, 홍보 주도. 기획 · 개발 전반 공동 수행</p>
+                <div class="lbl">Build / Learn</div>
+                <p>에브리타임 · 단톡방 · 인스타그램 홍보 + Google Analytics 기반 사용자 행동 분석 / 직접 개발 역량의 필요성을 절감한 계기</p>
+                <div class="figs">
+                  <div class="fig"><strong>~50</strong><span>MAU · 3개월</span></div>
+                  <div class="fig"><strong>33기</strong><span>SNUSV 최연소</span></div>
+                  <div class="fig"><strong>예창패</strong><span>지원</span></div>
+                </div>
+                <div class="stackline">STACK — Bubble · Google Analytics · MVP 제작 · 초기 유저 확보</div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="sec" id="experience">
+      <div class="sec-head rv">
+        <h2>Experience</h2>
+        <span class="count">Founding, operating, executing</span>
+      </div>
+      <div class="xp-rows rv">
+        <div class="xp">
+          <div>
+            <h3>SNUSV</h3>
+            <div class="m">서울대학교 창업동아리 · 33기</div>
+          </div>
+          <ul>
+            <li>33기 최연소 선발자. ‘뭐먹을래’ 아이디어로 예비창업패키지(예창패) 지원까지 진행</li>
+            <li>팀 2인으로 시작해 중반 4인까지 확장, 공동대표 2인 체제로 마무리</li>
+          </ul>
+        </div>
+        <div class="xp">
+          <div>
+            <h3>대한민국 육군 (JSA · 공동경비구역)</h3>
+            <div class="m">운전병 / 행정 계원 · 만기전역 · 실무 운영</div>
+          </div>
+          <ul>
+            <li>부대 재산관리 시스템 DELIIS 운영 — 제품 발주, 재고 · 창고 관리, 차량 자산 · 배차 행정, 재산 문서화</li>
+            <li>검열 준비(전산–실물 일치, 창고 정리) 주도 — 통상 3개월 인수인계를 1개월 만에 습득, 검열 성공 및 유공(포상휴가 1일)</li>
+          </ul>
+        </div>
+        <div class="xp">
+          <div>
+            <h3>Education &amp; Credentials</h3>
+            <div class="m">서울대학교 · 건설환경공학부</div>
+          </div>
+          <div class="cred">
+            <div class="hf"><span>재학</span><b>2학년 · 26-2 복학 예정</b></div>
+            <div class="hf"><span>자격</span><b>운전면허 1종</b></div>
+            <div class="hf"><span>한국어</span><b>모국어</b></div>
+            <div class="hf"><span>영어</span><b>중상급 (TOEIC 915)</b></div>
+            <div class="hf"><span>스페인어</span><b>초급</b></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="contact">
+      <div class="sec-head rv">
+        <h2>Contact</h2>
+        <span class="count">References you can reach</span>
+      </div>
+      <div class="biglinks rv">
+        <a class="biglink" href="https://groom-pick.vercel.app" target="_blank" rel="noreferrer">
+          <span>groom·pick <span class="m">— live</span></span><span class="arr">↗</span>
+        </a>
+        <a class="biglink" href="https://lafley-lucas.github.io/newslens-mvp/" target="_blank" rel="noreferrer">
+          <span>NewsLens <span class="m">— live</span></span><span class="arr">↗</span>
+        </a>
+        <a class="biglink" href="https://github.com/lafley-lucas" target="_blank" rel="noreferrer">
+          <span>GitHub <span class="m">— lafley-lucas</span></span><span class="arr">↗</span>
+        </a>
+        <a class="biglink" href="mailto:powerla.personal@gmail.com">
+          <span>Email <span class="m">— powerla.personal@gmail.com</span></span><span class="arr">↗</span>
+        </a>
+      </div>
+    </section>
+
+    <footer>
+      <span>박민준 · Personal Website</span>
+      <span>github.com/lafley-lucas · 2026</span>
+    </footer>
+
+  </div>
+
+  <div id="peek" aria-hidden="true">
+    <canvas data-k="gp"></canvas>
+    <canvas data-k="nl"></canvas>
+    <canvas data-k="fl"></canvas>
+    <canvas data-k="mw"></canvas>
+    <span class="ptag" id="peekTag">live render</span>
+  </div>
+
+  <script>
+(function(){
+  'use strict';
+
+  /* ================= Lab engine (shared with concept A) ================= */
+  var Lab = (function(){
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var fine = window.matchMedia('(pointer: fine)').matches;
+    var items = [];
+    var running = false, last = 0;
+
+    function fit(canvas){
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var r = canvas.getBoundingClientRect();
+      var w = Math.max(1, r.width), h = Math.max(1, r.height);
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      canvas.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0);
+      return { w: w, h: h };
+    }
+    function loop(t){
+      if (!last) last = t;
+      var dt = Math.min(0.05, (t - last) / 1000);
+      last = t;
+      var any = false;
+      for (var i = 0; i < items.length; i++){
+        if (!items[i].active || !items[i].on()) continue;
+        any = true;
+        items[i].v.update(dt);
+        items[i].v.draw();
+      }
+      if (any){ requestAnimationFrame(loop); } else { running = false; last = 0; }
+    }
+    function wake(){
+      if (!running && !reduced){ running = true; last = 0; requestAnimationFrame(loop); }
+    }
+    function register(canvas, factory, opts){
+      if (!canvas || !canvas.getContext) return null;
+      opts = opts || {};
+      var size = fit(canvas);
+      var v = factory(canvas.getContext('2d'), size);
+      var item = { v: v, active: false, on: opts.on || function(){ return true; } };
+      var rT;
+      window.addEventListener('resize', function(){
+        clearTimeout(rT);
+        rT = setTimeout(function(){
+          v.resize(fit(canvas));
+          if (reduced) v.renderStatic();
+        }, 150);
+      });
+      if (reduced){ v.renderStatic(); return v; }
+      if ('IntersectionObserver' in window){
+        new IntersectionObserver(function(es){
+          for (var i = 0; i < es.length; i++) item.active = es[i].isIntersecting;
+          wake();
+        }, { rootMargin: '100px' }).observe(canvas);
+      } else { item.active = true; }
+      items.push(item);
+      wake();
+      return { v: v, refit: function(){ v.resize(fit(canvas)); }, wake: wake };
+    }
+    return { register: register, reduced: reduced, fine: fine, wake: wake };
+  })();
+
+  /* ================= visual factories (same as concept A) ================= */
+  function makeGroompickScan(ctx, size){
+    var W = size.w, H = size.h;
+    var dots = [], t = 0, scanY = 0;
+    function build(){
+      dots.length = 0;
+      var cx = W / 2, cy = H / 2, R = Math.min(W, H) * 0.38;
+      var i, s;
+      for (i = 0; i < 46; i++){
+        var a = (i / 46) * Math.PI * 2;
+        dots.push({ x: cx + Math.cos(a) * R * 0.72, y: cy + Math.sin(a) * R, z: 'head' });
+      }
+      for (i = 0; i < 9; i++){
+        s = i / 8;
+        var by = cy - R * 0.34 - Math.sin(s * Math.PI) * R * 0.07;
+        dots.push({ x: cx - R * 0.44 + s * R * 0.3, y: by, z: 'brow' });
+        dots.push({ x: cx + R * 0.14 + s * R * 0.3, y: by, z: 'brow' });
+      }
+      dots.push({ x: cx - R * 0.28, y: cy - R * 0.16, z: 'eye' });
+      dots.push({ x: cx + R * 0.28, y: cy - R * 0.16, z: 'eye' });
+      for (i = 0; i < 5; i++) dots.push({ x: cx, y: cy - R * 0.08 + i * R * 0.07, z: 'nose' });
+      for (i = 0; i < 11; i++){
+        s = i / 10;
+        dots.push({ x: cx - R * 0.22 + s * R * 0.44, y: cy + R * 0.52 + Math.sin(s * Math.PI) * R * 0.05, z: 'lip' });
+      }
+      for (i = 0; i < 14; i++){
+        dots.push({ x: cx + (Math.random() * 2 - 1) * R * 0.52, y: cy + Math.random() * R * 0.34, z: 'skin' });
+      }
+    }
+    build();
+    return {
+      update: function(dt){
+        t += dt;
+        var want = H * 0.5 + Math.sin(t * 0.7) * H * 0.36;
+        scanY += (want - scanY) * Math.min(1, dt * 2.2);
+      },
+      draw: function(){
+        ctx.clearRect(0, 0, W, H);
+        var g = ctx.createLinearGradient(0, scanY - 26, 0, scanY + 26);
+        g.addColorStop(0, 'rgba(224,164,88,0)');
+        g.addColorStop(0.5, 'rgba(224,164,88,0.10)');
+        g.addColorStop(1, 'rgba(224,164,88,0)');
+        ctx.fillStyle = g; ctx.fillRect(0, scanY - 26, W, 52);
+        ctx.fillStyle = 'rgba(224,164,88,0.5)'; ctx.fillRect(0, scanY, W, 1);
+        ctx.font = '10px "IBM Plex Mono", monospace';
+        for (var i = 0; i < dots.length; i++){
+          var d = dots[i], near = Math.abs(d.y - scanY) < 16;
+          if (near){
+            ctx.fillStyle = 'rgba(224,164,88,0.95)';
+            ctx.fillRect(d.x - 1.4, d.y - 1.4, 2.8, 2.8);
+            if (d.z === 'brow' || d.z === 'skin'){
+              ctx.strokeStyle = 'rgba(224,164,88,0.5)';
+              ctx.strokeRect(d.x - 5, d.y - 5, 10, 10);
+            }
+          } else {
+            ctx.fillStyle = 'rgba(201,193,180,0.34)';
+            ctx.fillRect(d.x - 1, d.y - 1, 2, 2);
+          }
+        }
+        ctx.fillStyle = 'rgba(224,164,88,0.9)';
+        ctx.fillText('BROW ' + (0.74 + 0.2 * Math.sin(t * 1.3)).toFixed(2), W - 92, 22);
+        ctx.fillText('SKIN ' + (0.68 + 0.22 * Math.cos(t * 0.9)).toFixed(2), W - 92, 38);
+      },
+      resize: function(s){ W = s.w; H = s.h; build(); },
+      renderStatic: function(){ scanY = H * 0.42; this.draw(); }
+    };
+  }
+
+  function makeNewslensSort(ctx, size){
+    var W = size.w, H = size.h;
+    var LANES = [
+      { k: 'FACT',    c: '111,195,214' },
+      { k: 'CLAIM',   c: '224,192,122' },
+      { k: 'OPINION', c: '224,139,90' },
+      { k: 'FRAMING', c: '182,143,214' }
+    ];
+    var ps = [];
+    function laneY(i){ return H * (0.2 + i * 0.2); }
+    function reset(p){
+      p.x = -30 - Math.random() * W * 0.3;
+      p.y = H * (0.12 + Math.random() * 0.76);
+      p.lane = Math.floor(Math.random() * 4);
+      p.w = 10 + Math.random() * 22;
+      p.speed = W * (0.14 + Math.random() * 0.1);
+    }
+    for (var i = 0; i < 26; i++){ var p = {}; reset(p); p.x = Math.random() * W; ps.push(p); }
+    return {
+      update: function(dt){
+        for (var i = 0; i < ps.length; i++){
+          var p = ps[i];
+          p.x += p.speed * dt;
+          if (p.x > W * 0.52) p.y += (laneY(p.lane) - p.y) * Math.min(1, dt * 4);
+          if (p.x > W + 30) reset(p);
+        }
+      },
+      draw: function(){
+        ctx.clearRect(0, 0, W, H);
+        ctx.font = '10px "IBM Plex Mono", monospace';
+        for (var l = 0; l < 4; l++){
+          var y = laneY(l);
+          ctx.strokeStyle = 'rgba(' + LANES[l].c + ',0.14)';
+          ctx.beginPath(); ctx.moveTo(W * 0.5, y); ctx.lineTo(W - 14, y); ctx.stroke();
+          ctx.fillStyle = 'rgba(' + LANES[l].c + ',0.75)';
+          ctx.fillText(LANES[l].k, W * 0.52, y - 6);
+        }
+        ctx.strokeStyle = 'rgba(239,234,226,0.1)';
+        ctx.setLineDash([3, 5]);
+        ctx.beginPath(); ctx.moveTo(W * 0.5, H * 0.08); ctx.lineTo(W * 0.5, H * 0.92); ctx.stroke();
+        ctx.setLineDash([]);
+        for (var i = 0; i < ps.length; i++){
+          var p = ps[i], sorted = p.x > W * 0.52;
+          ctx.fillStyle = sorted ? 'rgba(' + LANES[p.lane].c + ',0.9)' : 'rgba(201,193,180,0.5)';
+          ctx.fillRect(p.x, p.y, p.w, 2);
+        }
+      },
+      resize: function(s){ W = s.w; H = s.h; },
+      renderStatic: function(){ for (var k = 0; k < 200; k++) this.update(1 / 60); this.draw(); }
+    };
+  }
+
+  function makeFluffyRescue(ctx, size){
+    var W = size.w, H = size.h;
+    var ps = [], t = 0;
+    function reset(p){
+      p.x = -10 - Math.random() * W * 0.25;
+      p.y = H * (0.16 + Math.random() * 0.42);
+      p.r = 2.5 + Math.random() * 2.5;
+      p.speed = W * (0.09 + Math.random() * 0.07);
+      p.saved = Math.random() < 0.8;
+      p.state = 'drift'; p.a = 1; p.rest = 0;
+    }
+    for (var i = 0; i < 22; i++){ var p = {}; reset(p); p.x = Math.random() * W * 0.6; ps.push(p); }
+    return {
+      update: function(dt){
+        t += dt;
+        var bx = W * 0.34, by = H * 0.74, lx = W * 0.8;
+        for (var i = 0; i < ps.length; i++){
+          var p = ps[i];
+          if (p.state === 'drift'){
+            p.x += p.speed * dt;
+            if (p.saved && p.x > W * 0.55) p.state = 'save';
+            else if (p.x >= lx) p.state = 'lost';
+          } else if (p.state === 'save'){
+            p.x += (bx - p.x) * Math.min(1, dt * 3);
+            p.y += (by - p.y) * Math.min(1, dt * 3);
+            if (Math.abs(p.x - bx) < 8 && Math.abs(p.y - by) < 8) p.state = 'rest';
+          } else if (p.state === 'rest'){
+            p.rest += dt;
+            if (p.rest > 1.6){ p.a -= dt * 2; if (p.a <= 0) reset(p); }
+          } else if (p.state === 'lost'){
+            p.a -= dt * 2.4;
+            if (p.a <= 0) reset(p);
+          }
+        }
+      },
+      draw: function(){
+        ctx.clearRect(0, 0, W, H);
+        var lx = W * 0.8, bx = W * 0.34, by = H * 0.74;
+        ctx.font = '10px "IBM Plex Mono", monospace';
+        ctx.strokeStyle = 'rgba(224,139,90,0.3)';
+        ctx.setLineDash([4, 6]);
+        ctx.beginPath(); ctx.moveTo(lx, H * 0.1); ctx.lineTo(lx, H * 0.9); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = 'rgba(224,139,90,0.8)';
+        ctx.fillText('CLOSE 21:00', lx + 8, H * 0.16);
+        ctx.strokeStyle = 'rgba(224,139,90,0.6)';
+        ctx.beginPath(); ctx.arc(lx + 34, H * 0.42, 11, 0, Math.PI * 2); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(lx + 34, H * 0.42);
+        ctx.lineTo(lx + 34 + Math.cos(t * 0.9 - Math.PI / 2) * 8, H * 0.42 + Math.sin(t * 0.9 - Math.PI / 2) * 8);
+        ctx.stroke();
+        ctx.strokeStyle = 'rgba(239,234,226,0.4)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(bx, by, 20, 0.15 * Math.PI, 0.85 * Math.PI); ctx.stroke();
+        ctx.lineWidth = 1;
+        ctx.fillStyle = 'rgba(201,193,180,0.6)';
+        ctx.fillText('RESCUED', bx - 26, by + 36);
+        for (var i = 0; i < ps.length; i++){
+          var p = ps[i];
+          var glow = p.state === 'rest' ? 0.95 : 0.7;
+          ctx.fillStyle = 'rgba(224,139,90,' + (p.a * glow) + ')';
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+          if (p.state === 'rest'){
+            ctx.strokeStyle = 'rgba(224,139,90,' + (p.a * 0.4) + ')';
+            ctx.beginPath(); ctx.arc(p.x, p.y, p.r + 3, 0, Math.PI * 2); ctx.stroke();
+          }
+        }
+      },
+      resize: function(s){ W = s.w; H = s.h; },
+      renderStatic: function(){ for (var k = 0; k < 200; k++) this.update(1 / 60); this.draw(); }
+    };
+  }
+
+  function makeMwoRoulette(ctx, size){
+    var W = size.w, H = size.h;
+    var N = 12, ang = 0, vel = 1.4, phase = 'spin', pick = -1, timer = 0;
+    return {
+      update: function(dt){
+        timer += dt;
+        if (phase === 'spin'){
+          vel += (2.2 - vel) * Math.min(1, dt * 2);
+          if (timer > 2.4){ phase = 'slow'; }
+        } else if (phase === 'slow'){
+          vel *= Math.max(0, 1 - dt * 1.5);
+          if (vel < 0.06){
+            vel = 0; phase = 'lock'; timer = 0;
+            var best = 1e9;
+            for (var i = 0; i < N; i++){
+              var a = ang + (i / N) * Math.PI * 2;
+              var d = Math.abs(Math.atan2(Math.sin(a), Math.cos(a)));
+              if (d < best){ best = d; pick = i; }
+            }
+          }
+        } else if (phase === 'lock'){
+          if (timer > 1.6){ phase = 'spin'; timer = 0; pick = -1; }
+        }
+        ang += vel * dt;
+      },
+      draw: function(){
+        ctx.clearRect(0, 0, W, H);
+        var cx = W / 2, cy = H / 2 + 6, R = Math.min(W, H) * 0.32;
+        ctx.strokeStyle = 'rgba(239,234,226,0.1)';
+        ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.stroke();
+        ctx.fillStyle = 'rgba(201,166,104,0.9)';
+        ctx.beginPath();
+        ctx.moveTo(cx, cy - R - 12); ctx.lineTo(cx - 5, cy - R - 20); ctx.lineTo(cx + 5, cy - R - 20);
+        ctx.closePath(); ctx.fill();
+        ctx.font = '10px "IBM Plex Mono", monospace';
+        for (var i = 0; i < N; i++){
+          var a = ang + (i / N) * Math.PI * 2;
+          var x = cx + Math.cos(a - Math.PI / 2) * R, y = cy + Math.sin(a - Math.PI / 2) * R;
+          if (phase === 'lock' && i === pick){
+            var pulse = 0.6 + 0.4 * Math.sin(timer * 9);
+            ctx.fillStyle = 'rgba(127,214,178,' + pulse + ')';
+            ctx.beginPath(); ctx.arc(x, y, 6, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = 'rgba(127,214,178,0.5)';
+            ctx.beginPath(); ctx.arc(x, y, 11, 0, Math.PI * 2); ctx.stroke();
+            ctx.fillStyle = 'rgba(127,214,178,1)';
+            ctx.fillText('PICK', x + 15, y + 3);
+          } else {
+            ctx.fillStyle = 'rgba(201,193,180,0.55)';
+            ctx.beginPath(); ctx.arc(x, y, 3.4, 0, Math.PI * 2); ctx.fill();
+          }
+        }
+      },
+      resize: function(s){ W = s.w; H = s.h; },
+      renderStatic: function(){ phase = 'lock'; pick = 2; timer = 0.05; this.draw(); }
+    };
+  }
+
+  var FACTORIES = { gp: makeGroompickScan, nl: makeNewslensSort, fl: makeFluffyRescue, mw: makeMwoRoulette };
+  var TAGS = { gp: 'GP-SCAN · live render', nl: 'NL-SORT · live render', fl: 'FL-RESCUE · live render', mw: 'MW-PICK · live render' };
+
+  /* panel canvases inside expanded rows */
+  var panels = { gp: 'pnlGp', nl: 'pnlNl', fl: 'pnlFl', mw: 'pnlMw' };
+  var panelRefs = {};
+  Object.keys(panels).forEach(function(k){
+    panelRefs[k] = Lab.register(document.getElementById(panels[k]), FACTORIES[k]);
+  });
+
+  /* ================= expandable rows ================= */
+  var rows = Array.prototype.slice.call(document.querySelectorAll('.row'));
+  rows.forEach(function(row){
+    var head = row.querySelector('.row-head');
+    var body = row.querySelector('.row-body');
+    var k = row.getAttribute('data-k');
+    head.addEventListener('click', function(){
+      var open = row.classList.toggle('open');
+      head.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open){
+        body.style.maxHeight = body.scrollHeight + 'px';
+        /* canvas had zero size while collapsed — refit once visible */
+        setTimeout(function(){
+          if (panelRefs[k] && panelRefs[k].refit) panelRefs[k].refit();
+          if (Lab.reduced && panelRefs[k] && panelRefs[k].v) panelRefs[k].v.renderStatic();
+        }, 60);
+      } else {
+        body.style.maxHeight = '0px';
+      }
+    });
+  });
+
+  /* ================= cursor-following peek ================= */
+  var peek = document.getElementById('peek');
+  var peekTag = document.getElementById('peekTag');
+  if (Lab.fine && !Lab.reduced && peek){
+    var peekCanvases = {};
+    Array.prototype.slice.call(peek.querySelectorAll('canvas')).forEach(function(c){
+      var k = c.getAttribute('data-k');
+      peekCanvases[k] = { el: c, ref: null };
+    });
+    var activeK = null, tx = 0, ty = 0, cx = 0, cy = 0, tracking = false;
+
+    function showPeek(k){
+      activeK = k;
+      Object.keys(peekCanvases).forEach(function(kk){
+        peekCanvases[kk].el.classList.toggle('on', kk === k);
+      });
+      if (!peekCanvases[k].ref){
+        peekCanvases[k].ref = Lab.register(peekCanvases[k].el, FACTORIES[k], {
+          on: function(){ return activeK === k && peek.classList.contains('show'); }
+        });
+      } else {
+        peekCanvases[k].ref.refit();
+      }
+      peekTag.textContent = TAGS[k];
+      peek.classList.add('show');
+      Lab.wake();
+      if (!tracking){ tracking = true; requestAnimationFrame(follow); }
+    }
+    function hidePeek(){
+      activeK = null;
+      peek.classList.remove('show');
+    }
+    function follow(){
+      cx += (tx - cx) * 0.14;
+      cy += (ty - cy) * 0.14;
+      var w = 360, h = 240, pad = 18;
+      var x = Math.min(Math.max(cx + 26, pad), window.innerWidth - w - pad);
+      var y = Math.min(Math.max(cy - h - 26, pad), window.innerHeight - h - pad);
+      peek.style.transform = 'translate(' + x + 'px,' + y + 'px)' + (peek.classList.contains('show') ? '' : ' scale(.92)');
+      requestAnimationFrame(follow);
+    }
+    rows.forEach(function(row){
+      var head = row.querySelector('.row-head');
+      var k = row.getAttribute('data-k');
+      head.addEventListener('pointerenter', function(e){ tx = e.clientX; ty = e.clientY; cx = tx; cy = ty; showPeek(k); });
+      head.addEventListener('pointermove', function(e){ tx = e.clientX; ty = e.clientY; }, { passive: true });
+      head.addEventListener('pointerleave', hidePeek);
+    });
+  }
+
+  /* ================= marquee ================= */
+  var marq = document.getElementById('marq');
+  if (marq){
+    var words = 'PLAN — BUILD — GROW — LAUNCH — REPEAT — ';
+    var chunk = '<span>' + (words + words).replace(/—/g, '—</span><span>') + '</span>';
+    marq.innerHTML = chunk + chunk;   /* duplicated for seamless 50% loop */
+  }
+
+  /* ================= hero letters + reveal ================= */
+  var giant = document.getElementById('giant');
+  window.addEventListener('load', function(){ giant.classList.add('in'); });
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if (en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+})();
+  </script>
+</body>
+</html>
